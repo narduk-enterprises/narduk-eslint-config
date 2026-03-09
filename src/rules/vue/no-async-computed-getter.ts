@@ -4,7 +4,7 @@
  * Prevents async computed properties (anti-pattern)
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_COMPOSITION_API } from '../utils/vue-docs-urls'
 
 export default {
@@ -22,8 +22,8 @@ export default {
         'Computed properties should not be async. Use watchEffect/watch + ref, or useFetch/useAsyncData for data fetching. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
 
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {
       return {}

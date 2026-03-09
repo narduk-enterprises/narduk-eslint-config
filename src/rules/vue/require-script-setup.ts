@@ -4,7 +4,7 @@
  * Warns when Options API is used instead of <script setup>
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_STYLE_GUIDE } from '../utils/vue-docs-urls'
 
 export default {
@@ -31,8 +31,8 @@ export default {
       preferScriptSetup: 'Prefer <script setup> over Options API. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
     const options = context.options[0] || {}
     const allowOptionsApi = options.allowOptionsApi !== false // Default: true
 

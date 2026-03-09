@@ -4,7 +4,7 @@
  * Warns against deep watches for performance
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_BEST_PRACTICES } from '../utils/vue-docs-urls'
 
 export default {
@@ -32,8 +32,8 @@ export default {
         'Avoid deep watches when possible for performance. Use /* vue-official allow-deep-watch */ to suppress. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
     const options = context.options[0] || {}
     const strict = options.strict !== false // Default: true
 

@@ -4,8 +4,8 @@
  * Warns when destructuring store properties without storeToRefs
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
-import { PINIA_DOCS } from '../utils/vue-docs-urls'
+import type { Rule } from 'eslint';
+import { PINIA_DOCS } from '../utils/vue-docs-urls';
 
 export default {
   meta: {
@@ -23,12 +23,12 @@ export default {
         'Destructure reactive store properties with storeToRefs() to maintain reactivity. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
+  create(context: Rule.RuleContext): Rule.RuleListener {
     return {
       VariableDeclarator(node: any) {
         // Check for destructuring pattern: const { prop } = store
         if (node.id && node.id.type === 'ObjectPattern' && node.init) {
-          const init = node.init
+          const init = node.init;
 
           // Check if RHS is a Pinia store call (useXxxStore() where name ends with 'Store')
           // Only flag if the function name ends with 'Store' to avoid false positives with composables
@@ -46,23 +46,23 @@ export default {
                 init.callee.property &&
                 init.callee.property.name === 'storeToRefs')
             ) {
-              return // Already using storeToRefs
+              return; // Already using storeToRefs
             }
 
             // Warn and provide fix
-            const sourceCode = context.sourceCode ?? (context as any).getSourceCode()
-            const storeCallText = sourceCode.getText(init)
+            const sourceCode = context.sourceCode ?? (context as any).getSourceCode();
+            const storeCallText = sourceCode.getText(init);
 
             context.report({
               node,
               messageId: 'preferStoreToRefs',
               data: { url: PINIA_DOCS },
-              fix(fixer) {
+              fix(fixer: Rule.RuleFixer) {
                 // Simple fix: wrap with storeToRefs
                 // const { prop } = useStore() -> const { prop } = storeToRefs(useStore())
-                return fixer.replaceText(init, `storeToRefs(${storeCallText})`)
+                return fixer.replaceText(init, `storeToRefs(${storeCallText})`);
               },
-            })
+            });
           }
 
           // Check if RHS is a store variable: const { prop } = store
@@ -74,12 +74,12 @@ export default {
               data: { url: PINIA_DOCS },
               fix(fixer: any) {
                 // const { prop } = store -> const { prop } = storeToRefs(store)
-                return fixer.replaceText(init, `storeToRefs(${init.name})`)
+                return fixer.replaceText(init, `storeToRefs(${init.name})`);
               },
-            } as any)
+            } as any);
           }
         }
       },
-    }
+    };
   },
-}
+};

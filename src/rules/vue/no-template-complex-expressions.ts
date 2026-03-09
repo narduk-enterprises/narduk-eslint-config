@@ -4,7 +4,7 @@
  * Warns on complex expressions in templates
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_STYLE_GUIDE } from '../utils/vue-docs-urls'
 
 const DEFAULT_WHITELIST = [
@@ -57,8 +57,8 @@ export default {
         'Template expression is too complex. Move to computed property or method. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
     const options = context.options[0] || {}
     const maxTernaryDepth = options.maxTernaryDepth ?? 1
     const maxLogicalOps = options.maxLogicalOps ?? 3

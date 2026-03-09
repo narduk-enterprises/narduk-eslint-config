@@ -4,7 +4,7 @@
  * Requires defineStore to have a string literal id
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { PINIA_DOCS } from '../utils/vue-docs-urls'
 import { isLiteral } from '../utils/ast-utils'
 
@@ -22,7 +22,7 @@ export default {
       requireStoreId: 'defineStore() requires a string literal id as first argument. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
+  create(context: Rule.RuleContext): Rule.RuleListener {
     return {
       CallExpression(node: any) {
         if (

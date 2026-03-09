@@ -9,9 +9,8 @@
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
-    "resolveJsonModule": true,
-    "allowJs": true
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "eslint-rule-tester.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.*"]
 }

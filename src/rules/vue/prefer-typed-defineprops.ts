@@ -4,7 +4,7 @@
  * Encourages typed defineProps in TypeScript
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_TYPESCRIPT_GUIDE } from '../utils/vue-docs-urls'
 
 export default {
@@ -21,9 +21,9 @@ export default {
       preferTypedProps: 'Prefer typed defineProps<{...}>() for better type safety. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
-    const filename = context.filename ?? context.getFilename?.()
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
+    const filename = context.filename ?? ((context as any).getFilename?.() ?? context.filename)
 
     // Only apply to TypeScript files
     const isTypeScript = filename.endsWith('.ts') || filename.endsWith('.vue')

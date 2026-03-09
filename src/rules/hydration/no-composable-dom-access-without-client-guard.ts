@@ -4,7 +4,7 @@
  * Requires client guards for DOM access in composables
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_SSR_GUIDE } from '../utils/vue-docs-urls'
 import { isDomAccess, isInClientContext } from '../utils/ast-utils'
 
@@ -33,8 +33,8 @@ export default {
         'DOM access (window/document/localStorage) in composable requires client guard. Use if (import.meta.client) or onMounted(). See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const filename = context.filename ?? context.getFilename?.()
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const filename = context.filename ?? ((context as any).getFilename?.() ?? context.filename)
     const options = context.options[0] || {}
     const allowProcessClient = options.allowProcessClient === true
 

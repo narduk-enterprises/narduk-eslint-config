@@ -4,7 +4,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { RuleContext } from 'eslint';
+import type { Rule } from 'eslint';
 
 let nuxtCache: boolean | null = null;
 let cacheKey: string | null = null;
@@ -13,7 +13,7 @@ let cacheKey: string | null = null;
  * Check if the project is using Nuxt
  * Caches result per working directory
  */
-export function isNuxtMode(context: RuleContext<string, any[]>): boolean {
+export function isNuxtMode(context: Rule.RuleContext): boolean {
   const cwd = context.cwd ?? (context as any).getCwd?.();
 
   // Use cache if same directory

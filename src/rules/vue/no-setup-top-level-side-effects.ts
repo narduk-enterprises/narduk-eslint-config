@@ -4,7 +4,7 @@
  * Prevents top-level side effects in <script setup> that can cause SSR issues
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_SSR_GUIDE } from '../utils/vue-docs-urls'
 import { isDomAccess, isInClientContext, isTopLevel } from '../utils/ast-utils'
 import { isNuxtMode, isAllowedNuxtComposable } from '../utils/nuxt-detection'
@@ -26,8 +26,8 @@ export default {
         'Use useFetch() or useAsyncData() instead of fetch() for SSR compatibility. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
     const isNuxt = isNuxtMode(context)
 
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {

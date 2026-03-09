@@ -4,7 +4,7 @@
  * Enforces composable functions are named with "use" prefix
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_STYLE_GUIDE } from '../utils/vue-docs-urls'
 
 const DEFAULT_COMPOSABLE_PATHS = ['**/composables/**/*.ts', '**/composables/**/*.js']
@@ -35,8 +35,8 @@ export default {
         'Composable functions should be named with "use" prefix (e.g., useXxx). See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const filename = context.filename ?? context.getFilename?.()
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const filename = context.filename ?? ((context as any).getFilename?.() ?? context.filename)
     const options = context.options[0] || {}
     const paths = options.paths || DEFAULT_COMPOSABLE_PATHS
 

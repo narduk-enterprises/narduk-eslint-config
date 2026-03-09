@@ -1,0 +1,3 @@
+setup:
+  project: narduk-eslint-config
+  config: dev

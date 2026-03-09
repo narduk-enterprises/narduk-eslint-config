@@ -4,7 +4,7 @@
  * Warns against direct state mutation outside store actions
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { PINIA_DOCS } from '../utils/vue-docs-urls'
 
 export default {
@@ -32,7 +32,7 @@ export default {
         'Avoid direct state mutation outside store actions. Use store actions instead. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
+  create(context: Rule.RuleContext): Rule.RuleListener {
     const options = context.options[0] || {}
     const strict = options.strict !== false // Default: true
 

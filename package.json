@@ -1,6 +1,6 @@
 {
   "name": "@narduk-enterprises/eslint-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Consolidated ESLint plugin & shared config for Nuxt 4, Vue 3, Tailwind v4, and Nuxt UI v4 projects",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,10 +22,13 @@
   ],
   "scripts": {
     "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint .",
-    "prepublishOnly": "pnpm run build && pnpm run test"
+    "quality": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
+    "prepublishOnly": "pnpm run quality",
+    "ship": "test -z \"$(git status --porcelain)\" || (echo '❌ Uncommitted changes. Please commit or stash them before shipping.' && exit 1) && doppler run -- pnpm publish"
   },
   "keywords": [
     "eslint",
@@ -65,5 +68,12 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/narduk-enterprises/narduk-eslint-config.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }

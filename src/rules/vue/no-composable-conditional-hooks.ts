@@ -4,7 +4,7 @@
  * Warns against conditionally calling Vue composables in composables
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_COMPOSITION_API } from '../utils/vue-docs-urls'
 
 const VUE_COMPOSABLES = [
@@ -44,8 +44,8 @@ export default {
         'Vue composables (ref, computed, watchEffect, etc.) should be called unconditionally in composables. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const filename = context.filename ?? context.getFilename?.()
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const filename = context.filename ?? ((context as any).getFilename?.() ?? context.filename)
 
     // Only apply to composable files (heuristic)
     const isComposableFile = filename.includes('composables/') || filename.includes('composable')

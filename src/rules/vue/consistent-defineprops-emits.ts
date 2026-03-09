@@ -4,7 +4,7 @@
  * Ensures defineProps and defineEmits are called once at top-level
  */
 
-import type { RuleContext, RuleListener } from 'eslint'
+import type { Rule } from 'eslint'
 import { VUE_COMPOSITION_API } from '../utils/vue-docs-urls'
 import { isTopLevel } from '../utils/ast-utils'
 
@@ -25,8 +25,8 @@ export default {
         'defineProps() and defineEmits() must be called at top-level of <script setup>. See: {{url}}',
     },
   },
-  create(context: RuleContext<string, any[]>): RuleListener {
-    const parserServices = (context.sourceCode?.parserServices ?? context.parserServices) as any
+  create(context: Rule.RuleContext): Rule.RuleListener {
+    const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
 
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {
       // For non-Vue files, check directly

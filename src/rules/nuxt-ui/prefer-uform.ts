@@ -5,25 +5,8 @@
  * UForm provides validation, loading-auto, and better integration
  */
 
-import type { AST } from 'vue-eslint-parser'
-
-interface RuleContext {
-  report: (_options: {
-    node: AST.Node
-    messageId: string
-    data?: Record<string, string>
-    fix?: (_fixer: { replaceText: (_node: AST.Node, _text: string) => unknown }) => unknown
-  }) => void
-  sourceCode: {
-    parserServices?: {
-      defineTemplateBodyVisitor: (
-        visitor: Record<string, (node: AST.Node) => void>,
-        scriptVisitor?: Record<string, (node: AST.Node) => void>,
-      ) => Record<string, (node: AST.Node) => void>
-    }
-    getText: (_node?: AST.Node) => string
-  }
-}
+import type { AST } from 'vue-eslint-parser';
+import type { Rule } from 'eslint';
 
 export default {
   meta: {
@@ -40,24 +23,24 @@ export default {
         'Use <UForm> instead of native <form> for validation and loading-auto support. See: https://ui.nuxt.com/components/form',
     },
   },
-  create(context: RuleContext) {
-    const parserServices = context.sourceCode?.parserServices
+  create(context: Rule.RuleContext) {
+    const parserServices = context.sourceCode?.parserServices as any;
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {
-      return {}
+      return {};
     }
 
     return parserServices.defineTemplateBodyVisitor({
       VElement(node: AST.Node) {
-        const vElement = node as AST.VElement
+        const vElement = node as AST.VElement;
 
         // Check if it's a native form element
         if (vElement.name === 'form') {
           context.report({
             node: vElement.startTag,
             messageId: 'preferUForm',
-          })
+          });
         }
       },
-    })
+    });
   },
-}
+};
