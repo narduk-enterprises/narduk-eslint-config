@@ -1,0 +1,69 @@
+{
+  "name": "@narduk-enterprises/eslint-config",
+  "version": "1.0.0",
+  "description": "Consolidated ESLint plugin & shared config for Nuxt 4, Vue 3, Tailwind v4, and Nuxt UI v4 projects",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./config": {
+      "import": "./eslint.config.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "eslint.config.mjs",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "prepublishOnly": "pnpm run build && pnpm run test"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "nuxt",
+    "nuxt4",
+    "vue",
+    "vue3",
+    "nuxt-ui",
+    "tailwind",
+    "pinia",
+    "linting"
+  ],
+  "author": "Narduk Enterprises",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=9.0.0",
+    "vue-eslint-parser": ">=10.0.0"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-regexp": "^3.0.0",
+    "eslint-plugin-security": "^4.0.0",
+    "eslint-plugin-unicorn": "^63.0.0",
+    "typescript-eslint": "^8.56.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.13",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@typescript-eslint/rule-tester": "^8.56.1",
+    "eslint": "^10.0.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "vue-eslint-parser": "^10.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
