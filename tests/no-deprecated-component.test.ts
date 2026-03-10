@@ -2,15 +2,15 @@
  * Tests for no-deprecated-component rule
  */
 
-import { RuleTester } from '@typescript-eslint/rule-tester'
-import rule from '../src/rules/nuxt-ui/no-deprecated-component'
-import vueParser from 'vue-eslint-parser'
-import * as tsParser from '@typescript-eslint/parser'
+import { RuleTester } from '@typescript-eslint/rule-tester';
+import rule from '../src/rules/nuxt-ui/no-deprecated-component';
+import vueParser from 'vue-eslint-parser';
+import * as tsParser from '@typescript-eslint/parser';
 
-import { describe, it, afterAll } from 'vitest'
-RuleTester.describe = describe
-RuleTester.it = it
-RuleTester.afterAll = afterAll
+import { describe, it, afterAll } from 'vitest';
+RuleTester.describe = describe;
+RuleTester.it = it;
+RuleTester.afterAll = afterAll;
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -21,7 +21,7 @@ const ruleTester = new RuleTester({
       parser: tsParser,
     },
   },
-})
+});
 
 ruleTester.run('no-deprecated-component', rule, {
   valid: [
@@ -40,6 +40,10 @@ ruleTester.run('no-deprecated-component', rule, {
     {
       filename: 'test.vue',
       code: '<template><UButton>Click</UButton></template>',
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><USlider v-model="val" :min="1" :max="100" /></template>',
     },
   ],
   invalid: [
@@ -70,5 +74,21 @@ ruleTester.run('no-deprecated-component', rule, {
       ],
       output: '<template><UDropdownMenu>Dropdown</UDropdownMenu></template>',
     },
+    {
+      filename: 'test.vue',
+      code: '<template><URange v-model="val" :min="1" :max="100" /></template>',
+      errors: [
+        { messageId: 'deprecatedComponent', data: { name: 'URange', replacement: 'USlider' } },
+      ],
+      output: '<template><USlider v-model="val" :min="1" :max="100" /></template>',
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><u-range :min="0" :max="50" /></template>',
+      errors: [
+        { messageId: 'deprecatedComponent', data: { name: 'URange', replacement: 'USlider' } },
+      ],
+      output: '<template><u-slider :min="0" :max="50" /></template>',
+    },
   ],
-})
+});

@@ -11,6 +11,7 @@ import type { Rule } from 'eslint';
 const DEPRECATED_COMPONENTS: Record<string, string> = {
   UDivider: 'USeparator',
   UDropdown: 'UDropdownMenu',
+  URange: 'USlider',
 };
 
 export default {

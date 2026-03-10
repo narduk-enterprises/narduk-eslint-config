@@ -81,8 +81,9 @@ import preferUseSeoOverBareMeta from './rules/nuxt/prefer-use-seo-over-bare-meta
 import requireSchemaOnPages from './rules/nuxt/require-schema-on-pages';
 import noMapAsyncInServer from './rules/nuxt/no-map-async-in-server';
 
-// === Nuxt UI v4 rules (8) ===
+// === Nuxt UI v4 rules (9) ===
 import noUnknownComponentProp from './rules/nuxt-ui/no-unknown-component-prop';
+import noUnknownNuxtUiComponent from './rules/nuxt-ui/no-unknown-nuxt-ui-component';
 import noDeprecatedComponent from './rules/nuxt-ui/no-deprecated-component';
 import noDeprecatedProp from './rules/nuxt-ui/no-deprecated-prop';
 import noDeprecatedSlot from './rules/nuxt-ui/no-deprecated-slot';
@@ -185,6 +186,7 @@ const plugin = {
 
     // Nuxt UI
     'no-unknown-component-prop': noUnknownComponentProp,
+    'no-unknown-nuxt-ui-component': noUnknownNuxtUiComponent,
     'no-deprecated-component': noDeprecatedComponent,
     'no-deprecated-prop': noDeprecatedProp,
     'no-deprecated-slot': noDeprecatedSlot,
@@ -314,6 +316,7 @@ const plugin = {
         files: ['**/*.vue'],
         rules: {
           'narduk/no-unknown-component-prop': 'error',
+          'narduk/no-unknown-nuxt-ui-component': 'error',
           'narduk/no-deprecated-component': 'error',
           'narduk/no-deprecated-prop': 'error',
           'narduk/no-deprecated-slot': 'error',
