@@ -110,5 +110,51 @@ ruleTester.run('no-unknown-nuxt-ui-component', rule, {
       options: [{ additionalComponents: ['UFoo'] }],
       errors: [{ messageId: 'unknownComponent', data: { name: 'UBar' } }],
     },
+    // Nuxt UI v2/v3 components that have been replaced/removed in v4
+    {
+      filename: 'test.vue',
+      code: '<template><UButtonGroup><UButton /></UButtonGroup></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UButtonGroup' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UDivider /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UDivider' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UDropdown /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UDropdown' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UFormGroup /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UFormGroup' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UMeter /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UMeter' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UNotification /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UNotification' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><URadio /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'URadio' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UToggle /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UToggle' } }],
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><UVerticalNavigation /></template>',
+      errors: [{ messageId: 'unknownComponent', data: { name: 'UVerticalNavigation' } }],
+    },
   ],
 });
