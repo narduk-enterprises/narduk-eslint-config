@@ -44,6 +44,12 @@
         { "name": "content" }
       ],
       "events": []
+    },
+    "UModal": {
+      "name": "UModal",
+      "props": [{ "name": "open", "type": "boolean" }],
+      "slots": [{ "name": "header" }, { "name": "body" }, { "name": "footer" }],
+      "events": []
     }
   }
 }

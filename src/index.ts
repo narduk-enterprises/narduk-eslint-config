@@ -81,7 +81,7 @@ import preferUseSeoOverBareMeta from './rules/nuxt/prefer-use-seo-over-bare-meta
 import requireSchemaOnPages from './rules/nuxt/require-schema-on-pages';
 import noMapAsyncInServer from './rules/nuxt/no-map-async-in-server';
 
-// === Nuxt UI v4 rules (9) ===
+// === Nuxt UI v4 rules (10) ===
 import noUnknownComponentProp from './rules/nuxt-ui/no-unknown-component-prop';
 import noUnknownNuxtUiComponent from './rules/nuxt-ui/no-unknown-nuxt-ui-component';
 import noDeprecatedComponent from './rules/nuxt-ui/no-deprecated-component';
@@ -91,6 +91,7 @@ import noDeprecatedEvent from './rules/nuxt-ui/no-deprecated-event';
 import requireValidVariantValues from './rules/nuxt-ui/require-valid-variant-values';
 import preferUform from './rules/nuxt-ui/prefer-uform';
 import preferLoadingAuto from './rules/nuxt-ui/prefer-loading-auto';
+import noUCardInUModal from './rules/nuxt-ui/no-ucard-in-umodal';
 
 // === Vue 3 best practices rules (9) ===
 // NOTE: 3 rules removed — use eslint-plugin-vue built-ins instead:
@@ -194,6 +195,7 @@ const plugin = {
     'require-valid-variant-values': requireValidVariantValues,
     'prefer-uform': preferUform,
     'prefer-loading-auto': preferLoadingAuto,
+    'no-ucard-in-umodal': noUCardInUModal,
 
     // Vue (9 custom rules — 3 duplicates deferred to eslint-plugin-vue)
     'no-setup-top-level-side-effects': noSetupTopLevelSideEffects,
@@ -324,6 +326,7 @@ const plugin = {
           'narduk/require-valid-variant-values': 'error',
           'narduk/prefer-uform': 'warn',
           'narduk/prefer-loading-auto': 'warn',
+          'narduk/no-ucard-in-umodal': 'error',
         },
       },
     ],

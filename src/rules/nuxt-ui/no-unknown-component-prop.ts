@@ -6,14 +6,14 @@
 
 // Note: Using basic ESLint types since @typescript-eslint/utils may not be available
 // This is compatible with ESLint 9 flat config
-import type { AST } from 'vue-eslint-parser'
+import type { AST } from 'vue-eslint-parser';
 import {
   normalizeComponentName,
   normalizePropName,
   isNuxtUIComponent,
-} from '../utils/component-utils'
-import { getComponentSpec } from '../utils/spec-loader'
-import type { PluginOptions } from '../types'
+} from '../utils/component-utils';
+import { getComponentSpec } from '../utils/spec-loader';
+import type { PluginOptions } from '../types';
 
 /**
  * Standard HTML attributes that should be allowed on all components
@@ -27,7 +27,7 @@ const STANDARD_HTML_ATTRIBUTES = new Set([
   'is',
   'v-is',
   'title',
-])
+]);
 
 /**
  * Check if an attribute name is a standard HTML attribute (including aria-* and data-*)
@@ -35,17 +35,17 @@ const STANDARD_HTML_ATTRIBUTES = new Set([
 function isStandardHTMLAttribute(name: string): boolean {
   // Standard HTML attributes
   if (STANDARD_HTML_ATTRIBUTES.has(name.toLowerCase())) {
-    return true
+    return true;
   }
   // ARIA attributes (aria-*)
   if (name.toLowerCase().startsWith('aria-')) {
-    return true
+    return true;
   }
   // Data attributes (data-*)
   if (name.toLowerCase().startsWith('data-')) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -78,7 +78,7 @@ const STANDARD_INPUT_ATTRIBUTES = new Set([
   'height',
   'width',
   'size',
-])
+]);
 
 /**
  * Standard HTML button attributes
@@ -91,7 +91,7 @@ const STANDARD_BUTTON_ATTRIBUTES = new Set([
   'formmethod',
   'formnovalidate',
   'formtarget',
-])
+]);
 
 /**
  * Component-specific prop whitelist for common inherited props
@@ -155,19 +155,19 @@ const COMPONENT_INHERITED_PROPS: Record<string, Set<string>> = {
     'icon',
     'title', // Common badge props
   ]),
-}
+};
 
 export interface RuleContext {
-  options: [PluginOptions?]
-  report: (_options: { node: AST.Node; messageId: string; data?: Record<string, string> }) => void
+  options: [PluginOptions?];
+  report: (_options: { node: AST.Node; messageId: string; data?: Record<string, string> }) => void;
   sourceCode: {
     parserServices?: {
       defineTemplateBodyVisitor: (
         visitor: Record<string, (node: AST.Node) => void>,
-        scriptVisitor?: Record<string, (node: AST.Node) => void>,
-      ) => Record<string, (node: AST.Node) => void>
-    }
-  }
+        scriptVisitor?: Record<string, (node: AST.Node) => void>
+      ) => Record<string, (node: AST.Node) => void>;
+    };
+  };
 }
 
 export default {
@@ -207,93 +207,95 @@ export default {
     },
   },
   create(context: RuleContext) {
-    const options = context.options[0] || {}
-    const prefixes = options.prefixes || ['U']
-    const allowedComponents = options.components
+    const options = context.options[0] || {};
+    const prefixes = options.prefixes || ['U'];
+    const allowedComponents = options.components;
 
     // Use defineTemplateBodyVisitor for Vue template AST nodes
     // Access via sourceCode.parserServices (not context.parserServices)
-    const parserServices = context.sourceCode?.parserServices
+    const parserServices = context.sourceCode?.parserServices;
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {
       // Fallback for non-Vue files or if parser services aren't available
-      return {}
+      return {};
     }
 
     return parserServices.defineTemplateBodyVisitor({
       VElement(node: AST.Node) {
-        const vElement = node as AST.VElement
-        const componentName = vElement.name
+        const vElement = node as AST.VElement;
+        const componentName = vElement.name;
 
         // Skip template element itself
         if (componentName === 'template') {
-          return
+          return;
         }
 
         if (!isNuxtUIComponent(componentName, prefixes, allowedComponents)) {
-          return
+          return;
         }
 
-        const normalizedName = normalizeComponentName(componentName, prefixes)
+        const normalizedName = normalizeComponentName(componentName, prefixes);
         if (!normalizedName) {
-          return
+          return;
         }
 
-        const spec = getComponentSpec(normalizedName, options.specPath)
+        const spec = getComponentSpec(normalizedName, options.specPath);
         if (!spec) {
-          return
+          return;
         }
 
-        const validProps = new Set(spec.props.map((p) => p.name.toLowerCase()))
+        const validProps = new Set(spec.props.map((p) => p.name.toLowerCase()));
         const validPropsCamel = new Set(
-          spec.props.map((p) => normalizePropName(p.name).toLowerCase()),
-        )
+          spec.props.map((p) => normalizePropName(p.name).toLowerCase())
+        );
 
         // Check all attributes
         for (const attr of vElement.startTag.attributes) {
           if (attr.type !== 'VAttribute') {
-            continue
+            continue;
           }
 
-          let propName: string | null = null
+          let propName: string | null = null;
 
           // Handle different attribute types
           if (attr.key.type === 'VIdentifier') {
             // Regular attribute: prop-name="value"
-            propName = attr.key.name
+            propName = attr.key.name;
           } else if (attr.key.type === 'VDirectiveKey') {
             // Directive: :prop-name, v-model:prop-name, @event-name
-            const directiveKey = attr.key as AST.VDirectiveKey
+            const directiveKey = attr.key as AST.VDirectiveKey;
 
             // Handle v-bind:prop-name or :prop-name (shorthand)
             if (directiveKey.name.name === 'bind' || directiveKey.name.name === 'model') {
-              const argument = directiveKey.argument
+              const argument = directiveKey.argument;
               if (argument && argument.type === 'VIdentifier') {
-                propName = argument.name
+                propName = argument.name;
               } else if (argument && argument.type === 'VExpressionContainer') {
                 // Dynamic prop name (e.g., :[propName]) - skip
-                continue
+                continue;
               } else if (!argument && directiveKey.name.name === 'bind') {
                 // v-bind without argument (binds all props) - skip
-                continue
+                continue;
+              } else if (!argument && directiveKey.name.name === 'model') {
+                // v-model without argument - map to modelValue
+                propName = 'modelValue';
               } else {
-                // v-model without argument - skip (not a prop)
-                continue
+                continue;
               }
             } else {
               // Skip other directives (@click, v-if, v-for, etc.)
-              continue
+              continue;
             }
           } else {
-            continue
+            continue;
           }
 
           if (!propName || typeof propName !== 'string') {
-            continue
+            continue;
           }
 
           // Allow standard HTML attributes (class, id, style, aria-*, data-*)
           if (isStandardHTMLAttribute(propName)) {
-            continue
+            continue;
           }
 
           // Allow standard HTML input attributes on input-like components
@@ -301,7 +303,7 @@ export default {
             normalizedName === 'UInput' &&
             STANDARD_INPUT_ATTRIBUTES.has(propName.toLowerCase())
           ) {
-            continue
+            continue;
           }
 
           // Allow standard HTML button attributes on button components
@@ -309,41 +311,41 @@ export default {
             normalizedName === 'UButton' &&
             STANDARD_BUTTON_ATTRIBUTES.has(propName.toLowerCase())
           ) {
-            continue
+            continue;
           }
 
           // Check component-specific inherited props (e.g., UButton inherits 'to' from NuxtLink)
-          const inheritedProps = COMPONENT_INHERITED_PROPS[normalizedName]
+          const inheritedProps = COMPONENT_INHERITED_PROPS[normalizedName];
           if (inheritedProps) {
-            const propNameLower = propName.toLowerCase()
+            const propNameLower = propName.toLowerCase();
             // Check both kebab-case and camelCase versions
             if (inheritedProps.has(propNameLower) || inheritedProps.has(propName)) {
-              continue
+              continue;
             }
             // Also check normalized camelCase version
-            const normalizedProp = normalizePropName(propName)
+            const normalizedProp = normalizePropName(propName);
             if (
               inheritedProps.has(normalizedProp) ||
               inheritedProps.has(normalizedProp.toLowerCase())
             ) {
-              continue
+              continue;
             }
           }
 
           // Normalize kebab-case to camelCase for comparison
-          const normalizedProp = normalizePropName(propName).toLowerCase()
-          const propNameLower = propName.toLowerCase()
+          const normalizedProp = normalizePropName(propName).toLowerCase();
+          const propNameLower = propName.toLowerCase();
 
           // Check if prop exists (check both original and normalized forms)
           // Also check kebab-case version
-          const propNameKebab = propName.includes('-') ? propName.toLowerCase() : null
+          const propNameKebab = propName.includes('-') ? propName.toLowerCase() : null;
           const isValid =
             validProps.has(propNameLower) ||
             validPropsCamel.has(normalizedProp) ||
-            (propNameKebab && validProps.has(propNameKebab))
+            (propNameKebab && validProps.has(propNameKebab));
 
           if (!isValid) {
-            const componentSlug = normalizedName.toLowerCase().replace(/^u/, '')
+            const componentSlug = normalizedName.toLowerCase().replace(/^u/, '');
             context.report({
               node: attr,
               messageId: 'unknownProp',
@@ -352,10 +354,10 @@ export default {
                 componentName: normalizedName,
                 componentSlug,
               },
-            })
+            });
           }
         }
       },
-    })
+    });
   },
-}
+};
