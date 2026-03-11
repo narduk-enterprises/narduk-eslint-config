@@ -107,6 +107,43 @@ Server-side input validation, Drizzle ORM patterns, and CSRF protection.
 
 Code organization rules for composables, stores, and utilities.
 
+## Nuxt Integration
+
+This config is designed to be used with Nuxt's ESLint module via `withNuxt(...)`:
+
+```js
+// eslint.config.mjs
+import withNuxt from './.nuxt/eslint.config.mjs';
+import { sharedConfigs } from '@narduk-enterprises/eslint-config/config';
+
+export default withNuxt(...sharedConfigs);
+```
+
+`withNuxt()` provides Vue/Nuxt parser setup, auto-import awareness, and TypeScript integration. The shared config layers on top of it with community plugins and custom rules.
+
+> **Note:** `import-x/no-unresolved` is intentionally disabled. Nuxt aliases (`#imports`, `~`, `@`) are not resolvable by the plugin and would produce false positives.
+
+## Cloudflare Edge Compatibility
+
+Node-only rules are scoped to files that actually run in Node.js:
+
+| Rule | Applies to |
+| --- | --- |
+| `unicorn/prefer-node-protocol` | `scripts/**`, `*.config.*`, `server/**` |
+| `no-restricted-imports` (fs, net, etc.) | `server/api/**`, `server/routes/**`, `server/functions/**` |
+
+Edge runtime files (API routes, server routes) are protected by `no-restricted-imports` which disallows Node-only built-in modules (`fs`, `net`, `tls`, `child_process`, `cluster`, `worker_threads`) that are unavailable in Cloudflare Workers.
+
+## Vitest Support
+
+Test files matching `**/*.test.ts`, `**/*.spec.ts`, or `tests/**/*.ts` get:
+
+- **Globals** — `describe`, `it`, `test`, `expect` are available without imports
+- **`vitest/no-focused-tests`** — errors on `.only` tests to prevent accidental commits
+- **`vitest/no-disabled-tests`** — warns on skipped tests
+- **`vitest/expect-expect`** — warns on tests with no assertions
+- **`no-only-tests/no-only-tests`** — additional `.only` guard as a safety net
+
 ## License
 
 MIT

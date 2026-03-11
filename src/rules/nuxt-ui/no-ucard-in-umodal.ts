@@ -34,7 +34,7 @@ export default {
     return parserServices.defineTemplateBodyVisitor({
       VElement(node: AST.Node) {
         const vElement = node as AST.VElement;
-        const name = vElement.rawName || vElement.name;
+        const name = (vElement as any).rawName || vElement.name;
 
         if (name === 'UModal' || name === 'u-modal') {
           uModalCount++;
@@ -51,7 +51,7 @@ export default {
       },
       'VElement:exit'(node: AST.Node) {
         const vElement = node as AST.VElement;
-        const name = vElement.rawName || vElement.name;
+        const name = (vElement as any).rawName || vElement.name;
 
         if (name === 'UModal' || name === 'u-modal') {
           uModalCount--;
