@@ -34,15 +34,15 @@ export default {
         properties: {
           maxTernaryDepth: {
             type: 'number',
-            default: 1,
+            default: 2,
           },
           maxLogicalOps: {
             type: 'number',
-            default: 3,
+            default: 5,
           },
           maxCallArgs: {
             type: 'number',
-            default: 1,
+            default: 3,
           },
           allowedFunctions: {
             type: 'array',
@@ -60,9 +60,9 @@ export default {
   create(context: Rule.RuleContext): Rule.RuleListener {
     const parserServices = (context.sourceCode?.parserServices ?? (context as any).parserServices) as any
     const options = context.options[0] || {}
-    const maxTernaryDepth = options.maxTernaryDepth ?? 1
-    const maxLogicalOps = options.maxLogicalOps ?? 3
-    const maxCallArgs = options.maxCallArgs ?? 1
+    const maxTernaryDepth = options.maxTernaryDepth ?? 2
+    const maxLogicalOps = options.maxLogicalOps ?? 5
+    const maxCallArgs = options.maxCallArgs ?? 3
     const allowedFunctions = options.allowedFunctions || DEFAULT_WHITELIST
 
     if (!parserServices || !parserServices.defineTemplateBodyVisitor) {

@@ -81,12 +81,12 @@ ruleTester.run('no-template-complex-expressions', rule, {
     },
   ],
   invalid: [
-    // Nested ternary (still flagged)
+    // Nested ternary (exceeds maxTernaryDepth default of 2)
     {
       filename: 'test.vue',
       code: `
         <template>
-          <div>{{ a ? b ? c : d : e }}</div>
+          <div>{{ a ? b ? c ? x : y : d : e }}</div>
         </template>
       `,
       errors: [
@@ -95,12 +95,12 @@ ruleTester.run('no-template-complex-expressions', rule, {
         },
       ],
     },
-    // Multi-arg function call (exceeds maxCallArgs default of 1)
+    // Multi-arg function call (exceeds maxCallArgs default of 3)
     {
       filename: 'test.vue',
       code: `
         <template>
-          <div>{{ calculate(a, b, c) }}</div>
+          <div>{{ calculate(a, b, c, d) }}</div>
         </template>
       `,
       errors: [
