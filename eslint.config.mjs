@@ -172,6 +172,9 @@ export const sharedConfigs = [
   // require the node: protocol prefix here.
   {
     files: ['scripts/**/*.ts', '*.config.{js,ts,mjs}', 'server/**/*.ts'],
+    plugins: {
+      unicorn,
+    },
     rules: {
       'unicorn/prefer-node-protocol': 'error',
     },
