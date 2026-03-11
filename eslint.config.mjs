@@ -15,7 +15,7 @@ import security from 'eslint-plugin-security';
 import regexp from 'eslint-plugin-regexp';
 import vitest from 'eslint-plugin-vitest';
 import promise from 'eslint-plugin-promise';
-import eslintComments from 'eslint-plugin-eslint-comments';
+import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 import noOnlyTests from 'eslint-plugin-no-only-tests';
 
 // Re-export the plugin for direct usage
@@ -219,11 +219,11 @@ export const sharedConfigs = [
   // Prevent stale disable comments and encourage documenting suppressions
   {
     plugins: {
-      'eslint-comments': eslintComments,
+      '@eslint-community/eslint-comments': eslintComments,
     },
     rules: {
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'warn',
+      '@eslint-community/eslint-comments/no-unused-disable': 'error',
+      '@eslint-community/eslint-comments/require-description': 'warn',
     },
   },
 
