@@ -27,6 +27,30 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run quality
-      - run: pnpm publish --no-git-checks
+
+      - name: Check if version already published
+        id: check
+        run: |
+          CURRENT=$(node -p "require('./package.json').version")
+          set +e
+          PUBLISHED=$(npm view "$NPM_PACKAGE_NAME" version --registry https://npm.pkg.github.com 2>/dev/null)
+          VIEW_EXIT=$?
+          set -e
+          if [ $VIEW_EXIT -ne 0 ]; then
+            echo "Registry check failed (auth/network). Skipping publish to avoid 409."
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          elif [ "$CURRENT" != "$PUBLISHED" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "Version $CURRENT already published, skipping."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NPM_PACKAGE_NAME: '@narduk-enterprises/eslint-config'
+
+      - name: Publish
+        if: steps.check.outputs.should_publish == 'true'
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
