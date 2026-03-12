@@ -60,10 +60,27 @@ ruleTester.run('no-unknown-nuxt-ui-component', rule, {
       filename: 'test.vue',
       code: '<template><NuxtPage /></template>',
     },
-    // Native HTML elements — ignored
+    // Native HTML elements — ignored (no false positive for ul → "UL" etc.)
     {
       filename: 'test.vue',
       code: '<template><div>hello</div></template>',
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><ul><li>item</li></ul></template>',
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><ol><li>one</li></ol></template>',
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><u>underline</u></template>',
+    },
+    // Native <UL> (PascalCase in source) is still recognized as HTML, not Nuxt UI
+    {
+      filename: 'test.vue',
+      code: '<template><UL><li>item</li></UL></template>',
     },
     // additionalComponents option allows custom U-prefixed components
     {

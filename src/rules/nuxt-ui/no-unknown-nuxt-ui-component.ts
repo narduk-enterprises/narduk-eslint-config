@@ -12,6 +12,23 @@ import { normalizeComponentName } from '../utils/component-utils';
 import type { Rule } from 'eslint';
 
 /**
+ * Native HTML element names (lowercase). When the rule normalizes tag names to PascalCase,
+ * native tags like <ul> become "UL" and would be wrongly flagged as an unknown U-prefixed
+ * component. Skipping these avoids the false positive.
+ */
+const NATIVE_HTML_ELEMENTS = new Set([
+  'a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'blockquote',
+  'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'data', 'datalist',
+  'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption',
+  'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr',
+  'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'main', 'map',
+  'mark', 'menu', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output',
+  'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select',
+  'slot', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td',
+  'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr',
+]);
+
+/**
  * Complete set of valid Nuxt UI v4 component names (U-prefixed PascalCase).
  * Generated from https://ui.nuxt.com/llms.txt
  */
@@ -198,6 +215,8 @@ export default {
         const startText = sourceCode.getText(startTag);
         const originalTagName = startText.slice(1).split(/[\s/>]/)[0];
         if (!originalTagName) return;
+
+        if (NATIVE_HTML_ELEMENTS.has(originalTagName.toLowerCase())) return;
 
         const normalized = normalizeComponentName(originalTagName, prefixes);
         if (!normalized) return;
