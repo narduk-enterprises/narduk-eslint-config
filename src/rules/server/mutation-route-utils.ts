@@ -10,7 +10,9 @@ export const MUTATION_ROUTE_PATTERN =
 
 export const APPROVED_MUTATION_WRAPPERS = new Set([
   'defineAdminMutation',
+  'definePublicMutation',
   'defineUserMutation',
+  'defineCallbackMutation',
   'defineWebhookMutation',
   'defineCronMutation',
 ])

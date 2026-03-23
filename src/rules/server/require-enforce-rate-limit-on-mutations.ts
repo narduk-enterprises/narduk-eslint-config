@@ -7,6 +7,7 @@
  */
 
 import type { Rule } from 'eslint';
+import { APPROVED_MUTATION_WRAPPERS } from './mutation-route-utils';
 
 const MUTATION_ROUTE_PATTERN =
   /\/server\/api\/.+\.(post|put|patch|delete)\.(ts|js|mjs|mts|cts)$/;
@@ -56,6 +57,10 @@ export default {
       CallExpression(node: any) {
         const callee = node.callee;
         if (callee?.type === 'Identifier' && RATE_LIMIT_CALLS.has(callee.name)) {
+          hasRateLimit = true;
+        }
+
+        if (callee?.type === 'Identifier' && APPROVED_MUTATION_WRAPPERS.has(callee.name)) {
           hasRateLimit = true;
         }
       },

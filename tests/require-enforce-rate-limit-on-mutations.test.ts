@@ -38,6 +38,28 @@ ruleTester.run('require-enforce-rate-limit-on-mutations', rule, {
       `,
     },
     {
+      filename: 'server/api/demo.post.ts',
+      options: [{ testMode: true }],
+      code: `
+        export default defineUserMutation(
+          { rateLimit: { namespace: 'demo', maxRequests: 30, windowMs: 60_000 } },
+          async ({ event, user }) => {
+            return { ok: true, userId: user.id }
+          },
+        )
+      `,
+    },
+    {
+      filename: 'server/api/public.post.ts',
+      options: [{ testMode: true }],
+      code: `
+        export default definePublicMutation(
+          { rateLimit: { namespace: 'demo', maxRequests: 30, windowMs: 60_000 } },
+          async ({ event }) => ({ ok: true }),
+        )
+      `,
+    },
+    {
       filename: 'server/api/webhooks/stripe.post.ts',
       code: `export default defineEventHandler(() => ({ ok: true }))`,
     },
