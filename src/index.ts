@@ -2,7 +2,7 @@
  * @narduk-enterprises/eslint-config
  *
  * Consolidated ESLint plugin for Nuxt 4, Vue 3, Tailwind v4, and Nuxt UI v4 projects.
- * 67 custom rules organized into 8 categories with multiple config presets.
+ * 75 custom rules organized into 8 categories with multiple config presets.
  *
  * Usage:
  *   import narduk from '@narduk-enterprises/eslint-config'
@@ -108,7 +108,7 @@ import piniaRequireDefineStoreId from './rules/vue/pinia-require-defineStore-id'
 import piniaNoDirectStateMutationOutsideActions from './rules/vue/pinia-no-direct-state-mutation-outside-actions';
 import piniaPreferStoreToRefsDestructure from './rules/vue/pinia-prefer-storeToRefs-destructure';
 
-// === Server-side rules (5) ===
+// === Server-side rules (11) ===
 // @ts-ignore
 import requireValidatedBody from './rules/server/require-validated-body.mjs';
 // @ts-ignore
@@ -118,6 +118,8 @@ import preferDrizzleOperators from './rules/server/prefer-drizzle-operators.mjs'
 import requireCsrfHeaderOnMutations from './rules/server/require-csrf-header-on-mutations';
 import noCsrfExemptRouteMisuse from './rules/server/no-csrf-exempt-route-misuse';
 import requireEnforceRateLimitOnMutations from './rules/server/require-enforce-rate-limit-on-mutations';
+import noRawDefineEventHandlerInMutationRoutes from './rules/server/no-raw-define-event-handler-in-mutation-routes';
+import requireImmediateMutationBodyValidation from './rules/server/require-immediate-mutation-body-validation';
 import noProcessEnvInWorkerRuntime from './rules/server/no-process-env-in-worker-runtime';
 import noRelativeServerImports from './rules/server/no-relative-server-imports';
 import noDirectLayerSourceImports from './rules/server/no-direct-layer-source-imports';
@@ -137,7 +139,7 @@ import noNonSerializableStoreState from './rules/architecture/no-non-serializabl
 const plugin = {
   meta: {
     name: '@narduk-enterprises/eslint-config',
-    version: '1.0.0',
+    version: '1.0.15',
   },
 
   rules: {
@@ -219,6 +221,10 @@ const plugin = {
     'require-csrf-header-on-mutations': requireCsrfHeaderOnMutations,
     'no-csrf-exempt-route-misuse': noCsrfExemptRouteMisuse,
     'require-enforce-rate-limit-on-mutations': requireEnforceRateLimitOnMutations,
+    'no-raw-define-event-handler-in-mutation-routes':
+      noRawDefineEventHandlerInMutationRoutes,
+    'require-immediate-mutation-body-validation':
+      requireImmediateMutationBodyValidation,
     'no-process-env-in-worker-runtime': noProcessEnvInWorkerRuntime,
     'no-relative-server-imports': noRelativeServerImports,
     'no-direct-layer-source-imports': noDirectLayerSourceImports,
@@ -420,6 +426,8 @@ const plugin = {
           'narduk/require-csrf-header-on-mutations': 'error',
           'narduk/no-csrf-exempt-route-misuse': 'warn',
           'narduk/require-enforce-rate-limit-on-mutations': 'error',
+          'narduk/no-raw-define-event-handler-in-mutation-routes': 'error',
+          'narduk/require-immediate-mutation-body-validation': 'error',
           'narduk/no-process-env-in-worker-runtime': 'error',
           'narduk/no-relative-server-imports': 'error',
           'narduk/no-direct-layer-source-imports': 'error',

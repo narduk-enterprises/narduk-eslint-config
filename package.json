@@ -1,6 +1,6 @@
 {
   "name": "@narduk-enterprises/eslint-config",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Consolidated ESLint plugin & shared config for Nuxt 4, Vue 3, Tailwind v4, and Nuxt UI v4 projects",
   "type": "module",
   "main": "./dist/index.js",
