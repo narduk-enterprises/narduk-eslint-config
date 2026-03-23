@@ -139,7 +139,7 @@ import noNonSerializableStoreState from './rules/architecture/no-non-serializabl
 const plugin = {
   meta: {
     name: '@narduk-enterprises/eslint-config',
-  version: '1.0.16',
+  version: '1.0.17',
   },
 
   rules: {

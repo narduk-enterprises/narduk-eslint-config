@@ -2,8 +2,8 @@
  * Forbid raw defineEventHandler() usage in mutation route files.
  *
  * Mutation routes should be declared with one of the approved wrapper helpers:
- * defineAdminMutation(), defineUserMutation(), defineWebhookMutation(), or
- * defineCronMutation().
+ * defineAdminMutation(), defineUserMutation(), definePublicMutation(),
+ * defineWebhookMutation(), defineCallbackMutation(), or defineCronMutation().
  */
 
 import type { Rule } from 'eslint'
@@ -30,7 +30,7 @@ export default {
     ],
     messages: {
       useMutationWrapper:
-        'Mutation routes must use defineAdminMutation(), defineUserMutation(), defineWebhookMutation(), or defineCronMutation() instead of raw defineEventHandler().',
+        'Mutation routes must use defineAdminMutation(), defineUserMutation(), definePublicMutation(), defineWebhookMutation(), defineCallbackMutation(), or defineCronMutation() instead of raw defineEventHandler().',
     },
   },
 

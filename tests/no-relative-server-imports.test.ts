@@ -25,6 +25,10 @@ ruleTester.run('no-relative-server-imports', rule, {
       filename: '/repo/apps/web/server/api/foo.get.ts',
       code: `import { z } from 'zod'`,
     },
+    {
+      filename: '/repo/layers/narduk-nuxt-layer/server/api/foo.get.ts',
+      code: `import { helper } from '../utils/helper'`,
+    },
   ],
   invalid: [
     {

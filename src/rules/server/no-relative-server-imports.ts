@@ -6,13 +6,20 @@ import { dirname, resolve } from 'path';
 import type { Rule } from 'eslint';
 
 const SERVER_SEGMENT = '/server/';
+const LAYER_SEGMENT = '/layers/';
 
 function normalizePath(value: string): string {
   return value.replace(/\\/g, '/');
 }
 
+function isLayerServerFile(filename: string): boolean {
+  const normalized = normalizePath(filename);
+  return normalized.includes(LAYER_SEGMENT) && normalized.includes(SERVER_SEGMENT);
+}
+
 function getAliasTarget(filename: string, importSource: string): string | null {
   if (!importSource.startsWith('../')) return null;
+  if (isLayerServerFile(filename)) return null;
 
   const absolute = normalizePath(resolve(dirname(filename), importSource));
   const serverIndex = absolute.lastIndexOf(SERVER_SEGMENT);
@@ -70,7 +77,8 @@ export default {
 
   create(context: Rule.RuleContext): Rule.RuleListener {
     const filename = context.filename ?? (context as any).getFilename?.() ?? '';
-    if (!normalizePath(filename).includes(SERVER_SEGMENT)) {
+    const normalized = normalizePath(filename);
+    if (!normalized.includes(SERVER_SEGMENT) || isLayerServerFile(normalized)) {
       return {};
     }
 
