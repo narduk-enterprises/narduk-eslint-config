@@ -117,6 +117,10 @@ import requireValidatedQuery from './rules/server/require-validated-query.mjs';
 import preferDrizzleOperators from './rules/server/prefer-drizzle-operators.mjs';
 import requireCsrfHeaderOnMutations from './rules/server/require-csrf-header-on-mutations';
 import noCsrfExemptRouteMisuse from './rules/server/no-csrf-exempt-route-misuse';
+import requireEnforceRateLimitOnMutations from './rules/server/require-enforce-rate-limit-on-mutations';
+import noProcessEnvInWorkerRuntime from './rules/server/no-process-env-in-worker-runtime';
+import noRelativeServerImports from './rules/server/no-relative-server-imports';
+import noDirectLayerSourceImports from './rules/server/no-direct-layer-source-imports';
 
 // === Architecture rules (5) ===
 // @ts-ignore
@@ -214,6 +218,10 @@ const plugin = {
     'prefer-drizzle-operators': preferDrizzleOperators,
     'require-csrf-header-on-mutations': requireCsrfHeaderOnMutations,
     'no-csrf-exempt-route-misuse': noCsrfExemptRouteMisuse,
+    'require-enforce-rate-limit-on-mutations': requireEnforceRateLimitOnMutations,
+    'no-process-env-in-worker-runtime': noProcessEnvInWorkerRuntime,
+    'no-relative-server-imports': noRelativeServerImports,
+    'no-direct-layer-source-imports': noDirectLayerSourceImports,
 
     // Architecture
     'no-module-scope-ref': noModuleScopeRef,
@@ -411,6 +419,10 @@ const plugin = {
           'narduk/prefer-drizzle-operators': 'error',
           'narduk/require-csrf-header-on-mutations': 'error',
           'narduk/no-csrf-exempt-route-misuse': 'warn',
+          'narduk/require-enforce-rate-limit-on-mutations': 'error',
+          'narduk/no-process-env-in-worker-runtime': 'error',
+          'narduk/no-relative-server-imports': 'error',
+          'narduk/no-direct-layer-source-imports': 'error',
         },
       },
     ],
