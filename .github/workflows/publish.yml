@@ -3,17 +3,22 @@ name: Publish
 on:
   push:
     branches: [main]
-    tags:
-      - 'v*'
+
+concurrency:
+  group: publish-main
+  cancel-in-progress: false
 
 jobs:
   publish:
+    if: ${{ !contains(github.event.head_commit.message, '[skip release]') }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:
@@ -28,29 +33,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run quality
 
-      - name: Check if version already published
-        id: check
+      - name: Bump package version
+        id: version
         run: |
-          CURRENT=$(node -p "require('./package.json').version")
-          set +e
-          PUBLISHED=$(npm view "$NPM_PACKAGE_NAME" version --registry https://npm.pkg.github.com 2>/dev/null)
-          VIEW_EXIT=$?
-          set -e
-          if [ $VIEW_EXIT -ne 0 ]; then
-            echo "Registry check failed (auth/network). Skipping publish to avoid 409."
-            echo "should_publish=false" >> $GITHUB_OUTPUT
-          elif [ "$CURRENT" != "$PUBLISHED" ]; then
-            echo "should_publish=true" >> $GITHUB_OUTPUT
-          else
-            echo "should_publish=false" >> $GITHUB_OUTPUT
-            echo "Version $CURRENT already published, skipping."
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          NPM_PACKAGE_NAME: '@narduk-enterprises/eslint-config'
+          npm version patch --no-git-tag-version
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: release v${{ steps.version.outputs.version }} [skip release]"
+          git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: Publish
-        if: steps.check.outputs.should_publish == 'true'
         run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

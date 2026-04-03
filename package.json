@@ -84,7 +84,9 @@
   },
   "pnpm": {
     "overrides": {
-      "@typescript-eslint/utils": "^8.57.0"
+      "@typescript-eslint/utils": "^8.57.0",
+      "flatted": "^3.4.2",
+      "picomatch": "^4.0.4"
     }
   }
 }
