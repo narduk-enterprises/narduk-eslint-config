@@ -80,7 +80,8 @@
     "url": "https://github.com/narduk-enterprises/narduk-eslint-config.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://code.platform.nard.uk/api/packages/narduk-enterprises/npm/",
+    "access": "restricted"
   },
   "pnpm": {
     "overrides": {
