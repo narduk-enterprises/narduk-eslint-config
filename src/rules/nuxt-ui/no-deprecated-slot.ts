@@ -19,7 +19,7 @@ import type { PluginOptions } from '../types'
 function isDynamicSlot(componentName: string, slotName: string): boolean {
   if (componentName === 'UTable') {
     // UTable supports dynamic slots: columnId-cell, columnId-header, columnId-data
-    return /^[a-zA-Z0-9_-]+-(cell|header|data)$/.test(slotName)
+    return /^[\w-]+-(?:cell|header|data)$/.test(slotName)
   }
   if (componentName === 'UTabs') {
     // UTabs supports any tab name as a slot

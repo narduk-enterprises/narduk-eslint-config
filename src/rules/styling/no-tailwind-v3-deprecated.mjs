@@ -15,14 +15,14 @@ function applyFixes(str) {
     .replace(/\bflex-shrink\b/g, 'shrink')
     .replace(/\bflex-grow-(\S+)\b/g, 'grow-$1')
     .replace(/\bflex-grow\b/g, 'grow')
-    .replace(/\bbg-gradient-to-(r|l|t|b|tr|tl|br|bl)\b/g, 'bg-linear-to-$1')
+    .replace(/\bbg-gradient-to-([rltb]|tr|tl|br|bl)\b/g, 'bg-linear-to-$1')
 }
 
 function findFirstDeprecated(str) {
   const m =
     str.match(/\bflex-shrink(-\S+)?\b/) ||
     str.match(/\bflex-grow(-\S+)?\b/) ||
-    str.match(/\bbg-gradient-to-(?:r|l|t|b|tr|tl|br|bl)\b/)
+    str.match(/\bbg-gradient-to-(?:[rltb]|tr|tl|br|bl)\b/)
   return m ? m[0] : null
 }
 

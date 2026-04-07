@@ -10,7 +10,7 @@ import type { Rule } from 'eslint';
 import { APPROVED_MUTATION_WRAPPERS } from './mutation-route-utils';
 
 const MUTATION_ROUTE_PATTERN =
-  /\/server\/api\/.+\.(post|put|patch|delete)\.(ts|js|mjs|mts|cts)$/;
+  /\/server\/api\/.+\.(?:post|put|patch|delete)\.(?:ts|js|mjs|mts|cts)$/;
 const EXEMPT_ROUTE_PATTERN = /\/server\/api\/(?:webhooks|cron|callbacks)\//;
 const RATE_LIMIT_CALLS = new Set(['enforceRateLimit', 'enforceRateLimitPolicy']);
 
