@@ -13,10 +13,32 @@
     "./config": {
       "import": "./eslint.config.mjs"
     },
+    "./config/core": {
+      "import": "./configs/core.mjs"
+    },
+    "./config/design-system": {
+      "import": "./configs/design-system.mjs"
+    },
+    "./config/nuxt-ui": {
+      "import": "./configs/nuxt-ui.mjs"
+    },
+    "./config/seo": {
+      "import": "./configs/seo.mjs"
+    },
+    "./config/server": {
+      "import": "./configs/server.mjs"
+    },
+    "./config/auth": {
+      "import": "./configs/auth.mjs"
+    },
+    "./config/template": {
+      "import": "./configs/template.mjs"
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "configs",
     "eslint.config.mjs",
     "README.md"
   ],
@@ -60,6 +82,7 @@
     "eslint-plugin-security": "^4.0.0",
     "eslint-plugin-unicorn": "^63.0.0",
     "eslint-plugin-vitest": "^0.5.4",
+    "eslint-plugin-vue": "^10.8.0",
     "typescript-eslint": "^8.56.1"
   },
   "devDependencies": {

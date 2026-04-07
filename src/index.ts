@@ -2,7 +2,7 @@
  * @narduk-enterprises/eslint-config
  *
  * Consolidated ESLint plugin for Nuxt 4, Vue 3, Tailwind v4, and Nuxt UI v4 projects.
- * 75 custom rules organized into 8 categories with multiple config presets.
+ * 75 custom rules organized into 8 categories with capability packs and legacy presets.
  *
  * Usage:
  *   import narduk from '@narduk-enterprises/eslint-config'
@@ -92,6 +92,7 @@ import requireValidVariantValues from './rules/nuxt-ui/require-valid-variant-val
 import preferUform from './rules/nuxt-ui/prefer-uform';
 import preferLoadingAuto from './rules/nuxt-ui/prefer-loading-auto';
 import noUCardInUModal from './rules/nuxt-ui/no-ucard-in-umodal';
+import vuePlugin from 'eslint-plugin-vue';
 
 // === Vue 3 best practices rules (9) ===
 // NOTE: 3 rules removed — use eslint-plugin-vue built-ins instead:
@@ -134,12 +135,161 @@ import noMultiStatementInlineHandler from './rules/architecture/no-multi-stateme
 import pluginSuffixForBrowserApis from './rules/architecture/plugin-suffix-for-browser-apis';
 import noNonSerializableStoreState from './rules/architecture/no-non-serializable-store-state';
 
+const designSystemRules = {
+  'narduk/no-native-button': 'error',
+  'narduk/no-native-input': 'error',
+  'narduk/no-native-form': 'error',
+  'narduk/no-native-table': 'error',
+  'narduk/no-native-details': 'error',
+  'narduk/no-native-hr': 'error',
+  'narduk/no-native-progress': 'error',
+  'narduk/no-native-dialog': 'error',
+  'narduk/no-native-kbd': 'error',
+  'narduk/no-native-layout': 'error',
+  'narduk/no-inline-svg': 'error',
+  'narduk/prefer-ulink': 'error',
+  'narduk/no-select-empty-value': 'error',
+  'narduk/no-fetch-in-component': 'error',
+} as const;
+
+const stylingRules = {
+  'narduk/no-raw-tailwind-colors': 'error',
+  'narduk/no-tailwind-v3-deprecated': 'error',
+  'narduk/no-invalid-nuxt-ui-token': 'error',
+  'narduk/no-inline-hex': 'error',
+  'narduk/no-style-block-layout': ['error', { max: 50 }],
+  'narduk/no-apply-in-scoped-style': 'error',
+  'narduk/lucide-icons-only': 'error',
+} as const;
+
+const hydrationRules = {
+  'narduk/require-client-only-switch': 'error',
+  'narduk/no-attrs-on-fragment': 'error',
+  'narduk/require-client-only-hydration-sensitive': 'warn',
+  'narduk/no-ssr-dom-access': 'error',
+  'narduk/no-composable-dom-access-without-client-guard': 'error',
+} as const;
+
+const templateVueRules = {
+  'narduk/no-multi-statement-inline-handler': 'error',
+} as const;
+
+const nuxtCoreRules = {
+  'narduk/no-legacy-head': 'warn',
+  'narduk/no-legacy-fetch-hook': 'error',
+  'narduk/no-raw-fetch': 'error',
+  'narduk/no-raw-fetch-in-stores': 'error',
+  'narduk/prefer-import-meta-client': 'warn',
+  'narduk/prefer-import-meta-dev': 'warn',
+  'narduk/valid-useAsyncData': 'warn',
+  'narduk/valid-useFetch': 'warn',
+  'narduk/no-map-async-in-server': 'warn',
+} as const;
+
+const seoRules = {
+  'narduk/require-use-seo-on-pages': 'warn',
+  'narduk/prefer-use-seo-over-bare-meta': 'warn',
+  'narduk/require-schema-on-pages': 'warn',
+} as const;
+
+const templateProjectRules = {
+  'narduk/no-fetch-create-bypass': 'error',
+  'narduk/app-structure-consistency': 'warn',
+} as const;
+
+const nuxtUiRules = {
+  'narduk/no-unknown-component-prop': 'error',
+  'narduk/no-unknown-nuxt-ui-component': 'error',
+  'narduk/no-deprecated-component': 'error',
+  'narduk/no-deprecated-prop': 'error',
+  'narduk/no-deprecated-slot': 'error',
+  'narduk/no-deprecated-event': 'error',
+  'narduk/require-valid-variant-values': 'error',
+  'narduk/prefer-uform': 'warn',
+  'narduk/prefer-loading-auto': 'warn',
+  'narduk/no-ucard-in-umodal': 'error',
+} as const;
+
+const vueOfficialRules = {
+  'vue/component-api-style': ['warn', ['script-setup']],
+  'vue/no-async-in-computed-properties': 'error',
+  'vue/define-props-declaration': ['error', 'type-based'],
+  'vue/define-emits-declaration': ['error', 'type-based'],
+} as const;
+
+const vueCoreRules = {
+  'narduk/no-setup-top-level-side-effects': 'error',
+  'narduk/prefer-shallow-watch': 'warn',
+  'narduk/no-template-complex-expressions': 'warn',
+  'narduk/prefer-typed-defineprops': 'warn',
+  'narduk/require-use-prefix-for-composables': 'warn',
+  'narduk/no-composable-conditional-hooks': 'warn',
+} as const;
+
+const piniaRules = {
+  'narduk/pinia-require-defineStore-id': 'error',
+  'narduk/pinia-no-direct-state-mutation-outside-actions': 'warn',
+  'narduk/pinia-prefer-storeToRefs-destructure': 'warn',
+} as const;
+
+const vueStrictOfficialRules = {
+  'vue/component-api-style': ['error', ['script-setup']],
+  'vue/no-async-in-computed-properties': 'error',
+  'vue/define-props-declaration': ['error', 'type-based'],
+  'vue/define-emits-declaration': ['error', 'type-based'],
+} as const;
+
+const vueStrictCoreRules = {
+  'narduk/no-setup-top-level-side-effects': 'error',
+  'narduk/prefer-shallow-watch': 'error',
+  'narduk/no-template-complex-expressions': 'error',
+  'narduk/prefer-typed-defineprops': 'error',
+  'narduk/require-use-prefix-for-composables': 'error',
+  'narduk/no-composable-conditional-hooks': 'error',
+} as const;
+
+const piniaStrictRules = {
+  'narduk/pinia-require-defineStore-id': 'error',
+  'narduk/pinia-no-direct-state-mutation-outside-actions': 'error',
+  'narduk/pinia-prefer-storeToRefs-destructure': 'error',
+} as const;
+
+const serverDataRules = {
+  'narduk/require-validated-body': 'error',
+  'narduk/require-validated-query': 'error',
+  'narduk/prefer-drizzle-operators': 'error',
+  'narduk/no-raw-define-event-handler-in-mutation-routes': 'error',
+  'narduk/require-immediate-mutation-body-validation': 'error',
+} as const;
+
+const authRules = {
+  'narduk/require-csrf-header-on-mutations': 'error',
+  'narduk/no-csrf-exempt-route-misuse': 'warn',
+  'narduk/require-enforce-rate-limit-on-mutations': 'error',
+} as const;
+
+const serverRuntimeRules = {
+  'narduk/no-process-env-in-worker-runtime': 'error',
+  'narduk/no-relative-server-imports': 'error',
+} as const;
+
+const templateServerRules = {
+  'narduk/no-direct-layer-source-imports': 'error',
+} as const;
+
+const appArchitectureRules = {
+  'narduk/no-module-scope-ref': 'warn',
+  'narduk/no-inline-types-in-stores': 'warn',
+  'narduk/plugin-suffix-for-browser-apis': 'error',
+  'narduk/no-non-serializable-store-state': 'warn',
+} as const;
+
 // ─── Plugin Definition ──────────────────────────────────────────────────────
 
 const plugin = {
   meta: {
     name: '@narduk-enterprises/eslint-config',
-  version: '1.0.17',
+    version: '1.0.18',
   },
 
   rules: {
@@ -241,11 +391,11 @@ const plugin = {
 
   configs: {
     /**
-     * Design system + styling + hydration rules for Vue files
+     * Design system rules for Vue files
      */
-    recommended: [
+    designSystem: [
       {
-        name: 'narduk/recommended',
+        name: 'narduk/design-system',
         plugins: {
           get narduk() {
             return plugin;
@@ -253,75 +403,143 @@ const plugin = {
         },
         files: ['**/*.vue'],
         rules: {
-          // Design System
-          'narduk/no-native-button': 'error',
-          'narduk/no-native-input': 'error',
-          'narduk/no-native-form': 'error',
-          'narduk/no-native-table': 'error',
-          'narduk/no-native-details': 'error',
-          'narduk/no-native-hr': 'error',
-          'narduk/no-native-progress': 'error',
-          'narduk/no-native-dialog': 'error',
-          'narduk/no-native-kbd': 'error',
-          'narduk/no-native-layout': 'error',
-          'narduk/no-inline-svg': 'error',
-          'narduk/prefer-ulink': 'error',
-          'narduk/no-select-empty-value': 'error',
-          'narduk/no-fetch-in-component': 'error',
-          // Styling
-          'narduk/no-raw-tailwind-colors': 'error',
-          'narduk/no-tailwind-v3-deprecated': 'error',
-          'narduk/no-invalid-nuxt-ui-token': 'error',
-          'narduk/no-inline-hex': 'error',
-          'narduk/no-style-block-layout': ['error', { max: 50 }],
-          'narduk/no-apply-in-scoped-style': 'error',
-          'narduk/lucide-icons-only': 'error',
-          // Hydration
-          'narduk/require-client-only-switch': 'error',
-          'narduk/no-attrs-on-fragment': 'error',
-          'narduk/require-client-only-hydration-sensitive': 'warn',
-          'narduk/no-ssr-dom-access': 'error',
-          'narduk/no-composable-dom-access-without-client-guard': 'error',
-          // Template
-          'narduk/no-multi-statement-inline-handler': 'error',
+          ...designSystemRules,
+          ...stylingRules,
         },
+      },
+    ],
+
+    /**
+     * Styling-only rules for Vue files
+     */
+    styling: [
+      {
+        name: 'narduk/styling',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['**/*.vue'],
+        rules: stylingRules,
+      },
+    ],
+
+    /**
+     * Hydration safety rules for Vue files
+     */
+    hydration: [
+      {
+        name: 'narduk/hydration',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['**/*.vue'],
+        rules: hydrationRules,
+      },
+    ],
+
+    /**
+     * Starter and template-facing Vue rules
+     */
+    templateVue: [
+      {
+        name: 'narduk/template-vue',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['**/*.vue'],
+        rules: templateVueRules,
+      },
+    ],
+
+    /**
+     * Design system + styling + hydration rules for Vue files
+     */
+    get recommended() {
+      return [
+        ...plugin.configs.designSystem,
+        ...plugin.configs.hydration,
+        ...plugin.configs.templateVue,
+      ];
+    },
+
+    /**
+     * Nuxt framework guardrails that are broadly reusable
+     */
+    nuxtCore: [
+      {
+        name: 'narduk/nuxt-core',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        rules: nuxtCoreRules,
+      },
+    ],
+
+    /**
+     * SEO and schema guardrails for page-level usage
+     */
+    seo: [
+      {
+        name: 'narduk/seo',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        rules: seoRules,
+      },
+    ],
+
+    /**
+     * Starter and template-facing project rules
+     */
+    templateProject: [
+      {
+        name: 'narduk/template-project',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        rules: templateProjectRules,
       },
     ],
 
     /**
      * Nuxt framework guardrails
      */
-    nuxt: [
-      {
-        name: 'narduk/nuxt',
-        plugins: {
-          get narduk() {
-            return plugin;
-          },
-        },
-        rules: {
-          'narduk/no-legacy-head': 'warn',
-          'narduk/no-legacy-fetch-hook': 'error',
-          'narduk/no-raw-fetch': 'error',
-          'narduk/no-raw-fetch-in-stores': 'error',
-          'narduk/no-fetch-create-bypass': 'error',
-          'narduk/prefer-import-meta-client': 'warn',
-          'narduk/prefer-import-meta-dev': 'warn',
-          'narduk/valid-useAsyncData': 'warn',
-          'narduk/valid-useFetch': 'warn',
-          'narduk/app-structure-consistency': 'warn',
-          'narduk/require-use-seo-on-pages': 'warn',
-          'narduk/prefer-use-seo-over-bare-meta': 'warn',
-          'narduk/require-schema-on-pages': 'warn',
-          'narduk/no-map-async-in-server': 'warn',
-        },
-      },
-    ],
+    get nuxt() {
+      return [
+        ...plugin.configs.nuxtCore,
+        ...plugin.configs.seo,
+        ...plugin.configs.templateProject,
+      ];
+    },
+
+    /**
+     * Core reusable rules for Nuxt/Vue app code that avoid starter-specific policy
+     */
+    get core() {
+      return [
+        ...plugin.configs.hydration,
+        ...plugin.configs.nuxtCore,
+        ...plugin.configs.vue,
+        ...plugin.configs.app,
+      ];
+    },
 
     /**
      * Nuxt UI v4 component validation
      */
-    'nuxt-ui': [
+    nuxtUi: [
       {
         name: 'narduk/nuxt-ui',
         plugins: {
@@ -330,51 +548,57 @@ const plugin = {
           },
         },
         files: ['**/*.vue'],
-        rules: {
-          'narduk/no-unknown-component-prop': 'error',
-          'narduk/no-unknown-nuxt-ui-component': 'error',
-          'narduk/no-deprecated-component': 'error',
-          'narduk/no-deprecated-prop': 'error',
-          'narduk/no-deprecated-slot': 'error',
-          'narduk/no-deprecated-event': 'error',
-          'narduk/require-valid-variant-values': 'error',
-          'narduk/prefer-uform': 'warn',
-          'narduk/prefer-loading-auto': 'warn',
-          'narduk/no-ucard-in-umodal': 'error',
+        rules: nuxtUiRules,
+      },
+    ],
+
+    /**
+     * Nuxt UI v4 component validation
+     */
+    get 'nuxt-ui'() {
+      return plugin.configs.nuxtUi;
+    },
+
+    /**
+     * Vue 3 Composition API best practices
+     */
+    vueCore: [
+      {
+        name: 'narduk/vue-core',
+        plugins: {
+          vue: vuePlugin,
+          get narduk() {
+            return plugin;
+          },
         },
+        rules: {
+          ...vueOfficialRules,
+          ...vueCoreRules,
+        },
+      },
+    ],
+
+    /**
+     * Pinia-specific best practices
+     */
+    pinia: [
+      {
+        name: 'narduk/pinia',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        rules: piniaRules,
       },
     ],
 
     /**
      * Vue 3 Composition API + Pinia best practices
      */
-    vue: [
-      {
-        name: 'narduk/vue',
-        plugins: {
-          get narduk() {
-            return plugin;
-          },
-        },
-        rules: {
-          // Official vue/ equivalents for removed duplicates
-          'vue/component-api-style': ['warn', ['script-setup']],
-          'vue/no-async-in-computed-properties': 'error',
-          'vue/define-props-declaration': ['error', 'type-based'],
-          'vue/define-emits-declaration': ['error', 'type-based'],
-          // Custom narduk rules
-          'narduk/no-setup-top-level-side-effects': 'error',
-          'narduk/prefer-shallow-watch': 'warn',
-          'narduk/no-template-complex-expressions': 'warn',
-          'narduk/prefer-typed-defineprops': 'warn',
-          'narduk/require-use-prefix-for-composables': 'warn',
-          'narduk/no-composable-conditional-hooks': 'warn',
-          'narduk/pinia-require-defineStore-id': 'error',
-          'narduk/pinia-no-direct-state-mutation-outside-actions': 'warn',
-          'narduk/pinia-prefer-storeToRefs-destructure': 'warn',
-        },
-      },
-    ],
+    get vue() {
+      return [...plugin.configs.vueCore, ...plugin.configs.pinia];
+    },
 
     /**
      * Vue strict mode — all rules set to error
@@ -383,57 +607,104 @@ const plugin = {
       {
         name: 'narduk/vue-strict',
         plugins: {
+          vue: vuePlugin,
           get narduk() {
             return plugin;
           },
         },
         rules: {
-          // Official vue/ equivalents — strict
-          'vue/component-api-style': ['error', ['script-setup']],
-          'vue/no-async-in-computed-properties': 'error',
-          'vue/define-props-declaration': ['error', 'type-based'],
-          'vue/define-emits-declaration': ['error', 'type-based'],
-          // Custom narduk rules — all error
-          'narduk/no-setup-top-level-side-effects': 'error',
-          'narduk/prefer-shallow-watch': 'error',
-          'narduk/no-template-complex-expressions': 'error',
-          'narduk/prefer-typed-defineprops': 'error',
-          'narduk/require-use-prefix-for-composables': 'error',
-          'narduk/no-composable-conditional-hooks': 'error',
-          'narduk/pinia-require-defineStore-id': 'error',
-          'narduk/pinia-no-direct-state-mutation-outside-actions': 'error',
-          'narduk/pinia-prefer-storeToRefs-destructure': 'error',
+          ...vueStrictOfficialRules,
+          ...vueStrictCoreRules,
+          ...piniaStrictRules,
         },
       },
     ],
 
     /**
-     * Server-side validation & security rules
+     * Server-side data validation and handler structure
      */
-    server: [
+    serverData: [
       {
-        name: 'narduk/server',
+        name: 'narduk/server-data',
         plugins: {
           get narduk() {
             return plugin;
           },
         },
         files: ['server/**/*.ts'],
-        rules: {
-          'narduk/require-validated-body': 'error',
-          'narduk/require-validated-query': 'error',
-          'narduk/prefer-drizzle-operators': 'error',
-          'narduk/require-csrf-header-on-mutations': 'error',
-          'narduk/no-csrf-exempt-route-misuse': 'warn',
-          'narduk/require-enforce-rate-limit-on-mutations': 'error',
-          'narduk/no-raw-define-event-handler-in-mutation-routes': 'error',
-          'narduk/require-immediate-mutation-body-validation': 'error',
-          'narduk/no-process-env-in-worker-runtime': 'error',
-          'narduk/no-relative-server-imports': 'error',
-          'narduk/no-direct-layer-source-imports': 'error',
-        },
+        rules: serverDataRules,
       },
     ],
+
+    /**
+     * Auth and mutation safety rules for server handlers
+     */
+    auth: [
+      {
+        name: 'narduk/auth',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['server/**/*.ts'],
+        rules: authRules,
+      },
+    ],
+
+    /**
+     * Runtime-safe server rules that apply outside auth concerns
+     */
+    serverRuntime: [
+      {
+        name: 'narduk/server-runtime',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['server/**/*.ts'],
+        rules: serverRuntimeRules,
+      },
+    ],
+
+    /**
+     * Server-side validation & security rules
+     */
+    get server() {
+      return [
+        ...plugin.configs.serverData,
+        ...plugin.configs.auth,
+        ...plugin.configs.serverRuntime,
+      ];
+    },
+
+    /**
+     * Starter and layer-specific server rules
+     */
+    templateServer: [
+      {
+        name: 'narduk/template-server',
+        plugins: {
+          get narduk() {
+            return plugin;
+          },
+        },
+        files: ['server/**/*.ts'],
+        rules: templateServerRules,
+      },
+    ],
+
+    /**
+     * Template-facing rules grouped for starter consumers
+     */
+    get template() {
+      return [
+        ...plugin.configs.templateProject,
+        ...plugin.configs.templateVue,
+        ...plugin.configs.templateServer,
+      ];
+    },
 
     /**
      * Architecture rules for composables, stores, and utils
@@ -447,12 +718,7 @@ const plugin = {
           },
         },
         files: ['app/composables/**/*.ts', 'app/utils/**/*.ts', 'app/stores/**/*.ts'],
-        rules: {
-          'narduk/no-module-scope-ref': 'warn',
-          'narduk/no-inline-types-in-stores': 'warn',
-          'narduk/plugin-suffix-for-browser-apis': 'error',
-          'narduk/no-non-serializable-store-state': 'warn',
-        },
+        rules: appArchitectureRules,
       },
     ],
 
@@ -461,12 +727,12 @@ const plugin = {
      */
     get all() {
       return [
-        ...plugin.configs.recommended,
-        ...plugin.configs.nuxt,
-        ...plugin.configs['nuxt-ui'],
-        ...plugin.configs.vue,
+        ...plugin.configs.core,
+        ...plugin.configs.designSystem,
+        ...plugin.configs.nuxtUi,
+        ...plugin.configs.seo,
         ...plugin.configs.server,
-        ...plugin.configs.app,
+        ...plugin.configs.template,
       ];
     },
   },

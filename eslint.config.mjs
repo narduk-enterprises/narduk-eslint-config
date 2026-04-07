@@ -6,6 +6,7 @@
 //   export default withNuxt(...sharedConfigs)
 
 import vueParser from 'vue-eslint-parser';
+import vuePlugin from 'eslint-plugin-vue';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import narduk from './dist/index.js';
@@ -21,11 +22,14 @@ import noOnlyTests from 'eslint-plugin-no-only-tests';
 // Re-export the plugin for direct usage
 export { default as nardukPlugin } from './dist/index.js';
 
-export const sharedConfigs = [
+const parserConfigs = [
   // ─── Parser: Vue files ────────────────────────────────────────────────
   // Use vue-eslint-parser with TypeScript parser for script blocks
   {
     files: ['**/*.vue'],
+    plugins: {
+      vue: vuePlugin,
+    },
     languageOptions: {
       parser: vueParser,
       parserOptions: {
@@ -53,10 +57,9 @@ export const sharedConfigs = [
   // ─── Prettier ─────────────────────────────────────────────────────────
   // Disable all stylistic/formatting rules — Prettier handles formatting
   eslintConfigPrettier,
+];
 
-  // ─── Narduk custom rules ──────────────────────────────────────────────
-  ...narduk.configs.all,
-
+const sharedTailConfigs = [
   // ─── Global ignores ───────────────────────────────────────────────────
   {
     ignores: ['.nuxt/**', '.output/**', 'dist/**', 'node_modules/**', '**/*.d.ts', 'scripts/**'],
@@ -76,6 +79,9 @@ export const sharedConfigs = [
   // Override or extend @nuxt/eslint defaults
   {
     files: ['**/*.vue'],
+    plugins: {
+      vue: vuePlugin,
+    },
     rules: {
       'vue/component-name-in-template-casing': [
         'warn',
@@ -94,6 +100,9 @@ export const sharedConfigs = [
 
   // ─── Project-level TypeScript rules ───────────────────────────────────
   {
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     rules: {
       'no-unused-vars': 'off',
       'no-debugger': 'warn',
@@ -272,3 +281,71 @@ export const sharedConfigs = [
   // ─── Regex validation ─────────────────────────────────────────────────
   regexp.configs['flat/recommended'],
 ];
+
+export const capabilityConfigs = {
+  core: [...narduk.configs.core],
+  designSystem: [...narduk.configs.designSystem],
+  nuxtUi: [...narduk.configs.nuxtUi],
+  seo: [...narduk.configs.seo],
+  auth: [...narduk.configs.auth],
+  server: [...narduk.configs.serverData, ...narduk.configs.serverRuntime],
+  template: [...narduk.configs.template],
+  hydration: [...narduk.configs.hydration],
+  nuxtCore: [...narduk.configs.nuxtCore],
+  vue: [...narduk.configs.vue],
+  pinia: [...narduk.configs.pinia],
+  serverData: [...narduk.configs.serverData],
+  serverRuntime: [...narduk.configs.serverRuntime],
+};
+
+export const legacyPresetConfigs = {
+  recommended: [...narduk.configs.recommended],
+  nuxt: [...narduk.configs.nuxt],
+  nuxtUi: [...narduk.configs.nuxtUi],
+  vue: [...narduk.configs.vue],
+  vueStrict: [...narduk.configs['vue-strict']],
+  server: [...narduk.configs.server],
+  app: [...narduk.configs.app],
+  all: [...narduk.configs.all],
+};
+
+export const defaultCapabilityPresetOrder = [
+  'core',
+  'designSystem',
+  'nuxtUi',
+  'seo',
+  'server',
+  'auth',
+  'template',
+];
+
+/**
+ * Compose the shared parser/community layers with one or more capability packs.
+ *
+ * @param {...(keyof typeof capabilityConfigs | Array<keyof typeof capabilityConfigs>)} presetNames
+ */
+export function composeSharedConfigs(...presetNames) {
+  const requestedPresetNames =
+    presetNames.length === 0
+      ? defaultCapabilityPresetOrder
+      : presetNames.flat();
+
+  const selectedCapabilityConfigs = requestedPresetNames.flatMap((presetName) => {
+    const presetConfigs = capabilityConfigs[presetName];
+    if (!presetConfigs) {
+      throw new Error(
+        `Unknown eslint config preset "${String(
+          presetName,
+        )}". Expected one of: ${Object.keys(capabilityConfigs).join(', ')}`,
+      );
+    }
+
+    return presetConfigs;
+  });
+
+  return [...parserConfigs, ...selectedCapabilityConfigs, ...sharedTailConfigs];
+}
+
+export const sharedConfigs = composeSharedConfigs();
+
+export default sharedConfigs;

@@ -10,7 +10,7 @@
 
 import { defineTemplateBodyVisitor } from '../utils.mjs'
 
-const HEX_REGEX = /^#[0-9a-fA-F]{3,8}$/
+const HEX_REGEX = /^#[\da-f]{3,8}$/i
 
 /** @type {import('eslint').Rule.RuleModule} */
 export default {
